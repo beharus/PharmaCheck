@@ -1,15 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './Demo.css';
 import Header from '../../components/header/Header';
 import ChatbotWidget from '../../components/chatbot/Chatbot';
+import videoSource from '../../assets/video.mp4';
 
 const Demo = () => {
   const [projectStatus] = useState('MVP');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const videoRef = useRef(null);
+
+  const togglePlay = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      setCurrentTime(videoRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (videoRef.current) {
+      setDuration(videoRef.current.duration);
+    }
+  };
+
+  const handleSeek = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pos = (e.clientX - rect.left) / rect.width;
+    if (videoRef.current) {
+      videoRef.current.currentTime = pos * duration;
+    }
+  };
+
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
 
   return (
     <div className="demo-page">
       <Header />
       <ChatbotWidget />
+      
       {/* Hero Section */}
       <section className="demo-hero-section">
         <div className="hero-gradient-1"></div>
@@ -26,49 +69,157 @@ const Demo = () => {
               <span className="gradient-text">Experience Our Solution</span>
             </h1>
             <p className="demo-hero-description">
-              Watch how our platform solves real problems and transforms the user experience
+              See how our QR-based authentication system eliminates counterfeit pharmaceuticals and protects consumer safety
             </p>
           </div>
         </div>
       </section>
 
-      {/* Video Section */}
-      <section className="demo-video-section">
+      {/* Main Demo Section - Video and Description */}
+      <section className="demo-main-section">
         <div className="container">
-          <div className="video-card">
-            <div className="video-header">
-              <h2 className="section-title">Demo Video</h2>
-              <span className="badge badge-accent">1-5 minutes</span>
+          <div className="demo-main-grid">
+            
+            {/* Video Card - Left Side */}
+            <div className="video-card-main">
+              <div className="video-header-main">
+                <h3 className="video-title-main">Watch Our Demo</h3>
+                <span className="badge badge-accent">5 min</span>
+              </div>
+              <div className="custom-video-player">
+                <video
+                  ref={videoRef}
+                  className="demo-video"
+                  onTimeUpdate={handleTimeUpdate}
+                  onLoadedMetadata={handleLoadedMetadata}
+                  onEnded={() => setIsPlaying(false)}
+                >
+                  <source src={videoSource} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+                
+                {/* Custom Video Controls */}
+                <div className="video-controls">
+                  <button className="play-btn" onClick={togglePlay}>
+                    {isPlaying ? (
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <rect x="6" y="4" width="4" height="16" />
+                        <rect x="14" y="4" width="4" height="16" />
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3" />
+                      </svg>
+                    )}
+                  </button>
+                  
+                  <div className="time-display">
+                    {formatTime(currentTime)} / {formatTime(duration)}
+                  </div>
+                  
+                  <div className="progress-bar" onClick={handleSeek}>
+                    <div 
+                      className="progress-fill" 
+                      style={{ width: `${(currentTime / duration) * 100 || 0}%` }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="video-wrapper">
-              <div className="video-placeholder">
-                <div className="video-icon-wrapper">
-                  <div className="video-glow gradient-hero-bg"></div>
-                  <svg className="video-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <polygon points="5 3 19 12 5 21 5 3" />
+
+            {/* Description Content - Right Side */}
+            <div className="demo-description-content">
+              <h2 className="description-title">
+                Revolutionizing Pharmaceutical Authentication
+              </h2>
+              
+              <div className="description-intro">
+                <p>
+                  In a world where counterfeit medications pose serious health risks, our innovative 
+                  QR-based verification system provides an unbreakable shield of protection for consumers 
+                  and pharmaceutical companies alike.
+                </p>
+              </div>
+
+              <div className="feature-highlight">
+                <div className="feature-icon gradient-hero-bg">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
                 </div>
-                <p className="video-text">Demo video will be displayed here</p>
-                <a href="#" className="btn btn-hero">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="icon">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="7 10 12 15 17 10" />
-                    <line x1="12" y1="15" x2="12" y2="3" />
+                <div>
+                  <h3>Secure & Tamper-Proof</h3>
+                  <p>
+                    Each pharmaceutical product is equipped with a unique QR code sealed beneath a 
+                    scratch-off layer. This physical security measure ensures that once removed, 
+                    the product cannot be resealed or resold as original, creating an irreversible 
+                    authentication mark.
+                  </p>
+                </div>
+              </div>
+
+              <div className="feature-highlight">
+                <div className="feature-icon gradient-accent-bg">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                   </svg>
-                  Upload Demo Video
-                </a>
+                </div>
+                <div>
+                  <h3>One-Time Verification</h3>
+                  <p>
+                    Our system tracks every scan in real-time. When a consumer scans a QR code using 
+                    our mobile app, the UUID is verified against our secure database. If the code has 
+                    been scanned before, the system immediately flags it as potentially counterfeit, 
+                    preventing the spread of fake medications.
+                  </p>
+                </div>
+              </div>
+
+              <div className="feature-highlight">
+                <div className="feature-icon gradient-hero-bg">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                    <line x1="12" y1="22.08" x2="12" y2="12" />
+                  </svg>
+                </div>
+                <div>
+                  <h3>Complete Product Information</h3>
+                  <p>
+                    Upon successful verification, users gain instant access to comprehensive product 
+                    details including active ingredients, manufacturing date, expiration date, batch 
+                    numbers, and manufacturer information—all verified directly from the source.
+                  </p>
+                </div>
+              </div>
+
+              <div className="stats-row">
+                <div className="stat-item">
+                  <div className="stat-number gradient-text">100%</div>
+                  <div className="stat-label">Counterfeit Detection</div>
+                </div>
+                <div className="stat-item">
+                  <div className="stat-number gradient-text">&lt;2s</div>
+                  <div className="stat-label">Verification Time</div>
+                </div>
+                <div className="stat-item">
+                  <div className="stat-number gradient-text">24/7</div>
+                  <div className="stat-label">System Availability</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Description Section */}
-      <section className="demo-description-section">
+      {/* Two Cards Section - Bottom */}
+      <section className="demo-cards-section">
         <div className="container">
-          <div className="description-grid">
-            {/* What's Shown */}
-            <div className="description-card">
+          <div className="demo-cards-grid">
+            
+            {/* What's Demonstrated Card */}
+            <div className="info-card">
               <div className="card-header-demo">
                 <div className="card-icon-demo gradient-hero-bg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -80,17 +231,18 @@ const Demo = () => {
               </div>
               <div className="card-content-demo">
                 <ul className="demo-list">
-                  <li>Core functionality and user interface walkthrough</li>
-                  <li>Key features solving the identified problem</li>
-                  <li>User journey from start to completion</li>
-                  <li>Integration with AI-powered components</li>
-                  <li>Real-time data processing and results</li>
+                  <li>QR code scanning and verification process</li>
+                  <li>Real-time authentication of pharmaceutical products</li>
+                  <li>Scratch-off security layer demonstration</li>
+                  <li>Product information display (ingredients, dates, manufacturer)</li>
+                  <li>One-time use validation preventing counterfeits</li>
+                  <li>Mobile app user interface and experience</li>
                 </ul>
               </div>
             </div>
 
-            {/* Problem & Solution Connection */}
-            <div className="description-card">
+            {/* Problem & Solution Card */}
+            <div className="info-card">
               <div className="card-header-demo">
                 <div className="card-icon-demo gradient-accent-bg">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -99,92 +251,27 @@ const Demo = () => {
                     <line x1="12" y1="17" x2="12.01" y2="17" />
                   </svg>
                 </div>
-                <h3 className="card-title-demo">Problem & Solution Link</h3>
+                <h3 className="card-title-demo">Problem & Solution</h3>
               </div>
               <div className="card-content-demo">
-                <p className="demo-text">
-                  <strong>Problem Addressed:</strong> Users struggle with inefficient processes 
-                  that waste time and resources.
-                </p>
-                <p className="demo-text">
-                  <strong>Our Solution:</strong> The demo showcases how our platform automates 
-                  complex tasks, reducing processing time by 80% and improving accuracy through 
-                  AI-powered analysis.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Tech Stack Section */}
-      <section className="demo-tech-section">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title centered">Technology Stack</h2>
-            <p className="section-description">
-              Built with modern technologies and AI solutions
-            </p>
-          </div>
-
-          <div className="tech-stack-grid">
-            <div className="tech-stack-card">
-              <div className="tech-stack-header">
-                <div className="tech-icon gradient-hero-bg">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polyline points="16 18 22 12 16 6" />
-                    <polyline points="8 6 2 12 8 18" />
-                  </svg>
+                <div className="problem-solution-block">
+                  <h4>The Problem</h4>
+                  <p>
+                    Counterfeit pharmaceuticals flood the market, putting lives at risk. Consumers 
+                    have no reliable way to verify authenticity at the point of purchase. Fake 
+                    medications can contain harmful substances or wrong dosages, leading to serious 
+                    health consequences.
+                  </p>
                 </div>
-                <h3>Frontend</h3>
-              </div>
-              <div className="tech-tags">
-                <span className="tech-tag">React</span>
-                <span className="tech-tag">TypeScript</span>
-                <span className="tech-tag">Tailwind CSS</span>
-                <span className="tech-tag">Next.js</span>
-              </div>
-            </div>
-
-            <div className="tech-stack-card">
-              <div className="tech-stack-header">
-                <div className="tech-icon gradient-hero-bg">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2" />
-                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2" />
-                    <line x1="6" y1="6" x2="6.01" y2="6" />
-                    <line x1="6" y1="18" x2="6.01" y2="18" />
-                  </svg>
+                <div className="problem-solution-block">
+                  <h4>Our Solution</h4>
+                  <p>
+                    Each medication receives a unique QR code with a scratch-off security layer. 
+                    Users scan the code through our app to instantly verify authenticity. The 
+                    one-time-use system prevents counterfeiters from copying and reselling fake 
+                    products as originals, creating a secure ecosystem for pharmaceutical distribution.
+                  </p>
                 </div>
-                <h3>Backend</h3>
-              </div>
-              <div className="tech-tags">
-                <span className="tech-tag">Node.js</span>
-                <span className="tech-tag">Express</span>
-                <span className="tech-tag">PostgreSQL</span>
-                <span className="tech-tag">Redis</span>
-              </div>
-            </div>
-
-            <div className="tech-stack-card">
-              <div className="tech-stack-header">
-                <div className="tech-icon gradient-accent-bg">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                    <polyline points="7.5 4.21 12 6.81 16.5 4.21" />
-                    <polyline points="7.5 19.79 7.5 14.6 3 12" />
-                    <polyline points="21 12 16.5 14.6 16.5 19.79" />
-                    <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-                    <line x1="12" y1="22.08" x2="12" y2="12" />
-                  </svg>
-                </div>
-                <h3>AI Solutions</h3>
-              </div>
-              <div className="tech-tags">
-                <span className="tech-tag">OpenAI GPT-4</span>
-                <span className="tech-tag">Claude AI</span>
-                <span className="tech-tag">TensorFlow</span>
-                <span className="tech-tag">LangChain</span>
               </div>
             </div>
           </div>
@@ -212,10 +299,10 @@ const Demo = () => {
                 <div className="status-content">
                   <h4>Completed</h4>
                   <ul className="status-list">
-                    <li>Core feature development</li>
-                    <li>AI model integration</li>
-                    <li>User authentication system</li>
-                    <li>Initial UI/UX design</li>
+                    <li>QR code generation and encryption system</li>
+                    <li>Scratch-off security layer integration</li>
+                    <li>Mobile app scanner functionality</li>
+                    <li>UUID-based verification database</li>
                   </ul>
                 </div>
               </div>
@@ -230,10 +317,10 @@ const Demo = () => {
                 <div className="status-content">
                   <h4>In Progress</h4>
                   <ul className="status-list">
-                    <li>Advanced analytics dashboard</li>
-                    <li>Real-time collaboration features</li>
-                    <li>Mobile app development</li>
-                    <li>Performance optimization</li>
+                    <li>Pharmacy partner onboarding platform</li>
+                    <li>Manufacturer integration API</li>
+                    <li>Real-time counterfeit detection alerts</li>
+                    <li>Product information database expansion</li>
                   </ul>
                 </div>
               </div>
@@ -248,10 +335,10 @@ const Demo = () => {
                 <div className="status-content">
                   <h4>Next Steps</h4>
                   <ul className="status-list">
-                    <li>Beta testing with select users</li>
-                    <li>Enterprise features rollout</li>
-                    <li>API documentation completion</li>
-                    <li>Marketing campaign launch</li>
+                    <li>Pilot program with major pharmacy chains</li>
+                    <li>Regulatory compliance certification</li>
+                    <li>Consumer awareness campaign launch</li>
+                    <li>Scale to cover 10,000+ pharmacies</li>
                   </ul>
                 </div>
               </div>
@@ -275,38 +362,15 @@ const Demo = () => {
                 </div>
               </div>
               <div className="prototype-text">
-                <h2 className="section-title">Try Live Prototype</h2>
+                <h2 className="section-title">Try the Verification System</h2>
                 <p className="prototype-description">
-                  Experience our working prototype firsthand. No registration required for testing.
+                  Experience our QR code verification system firsthand. Test the scanning and authentication process with sample codes.
                 </p>
               </div>
             </div>
 
-            <div className="prototype-info">
-              <div className="info-box">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="info-icon">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="16" x2="12" y2="12" />
-                  <line x1="12" y1="8" x2="12.01" y2="8" />
-                </svg>
-                <div className="info-content">
-                  <h4>Test Credentials</h4>
-                  <div className="credentials">
-                    <div className="credential-item">
-                      <span className="credential-label">Username:</span>
-                      <code className="credential-value">demo@example.com</code>
-                    </div>
-                    <div className="credential-item">
-                      <span className="credential-label">Password:</span>
-                      <code className="credential-value">demo123456</code>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <div className="prototype-actions">
-              <a href="#" className="btn btn-hero btn-large">
+              <a href="https://pharmachecklite.netlify.app/" target='_blank' className="btn btn-hero btn-large">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="icon">
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                   <polyline points="15 3 21 3 21 9" />
@@ -314,7 +378,7 @@ const Demo = () => {
                 </svg>
                 Launch Prototype
               </a>
-              <a href="#" className="btn btn-outline btn-large">
+              <a href="https://github.com/beharus/pharmacheck-backend"  target='_blank' className="btn btn-outline btn-large">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="icon">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                   <polyline points="14 2 14 8 20 8" />
@@ -322,7 +386,7 @@ const Demo = () => {
                   <line x1="16" y1="17" x2="8" y2="17" />
                   <polyline points="10 9 9 9 8 9" />
                 </svg>
-                View Documentation
+                Github Repository
               </a>
             </div>
           </div>
