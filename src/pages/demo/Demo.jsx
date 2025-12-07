@@ -52,7 +52,7 @@ const Demo = () => {
     <div className="demo-page">
       <Header />
       <ChatbotWidget />
-      
+
       {/* Hero Section */}
       <section className="demo-hero-section">
         <div className="hero-gradient-1"></div>
@@ -79,7 +79,7 @@ const Demo = () => {
       <section className="demo-main-section">
         <div className="container">
           <div className="demo-main-grid">
-            
+
             {/* Video Card - Left Side */}
             <div className="video-card-main">
               <div className="video-header-main">
@@ -87,43 +87,7 @@ const Demo = () => {
                 <span className="badge badge-accent">5 min</span>
               </div>
               <div className="custom-video-player">
-                <video
-                  ref={videoRef}
-                  className="demo-video"
-                  onTimeUpdate={handleTimeUpdate}
-                  onLoadedMetadata={handleLoadedMetadata}
-                  onEnded={() => setIsPlaying(false)}
-                >
-                  <source src={videoSource} type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-                
-                {/* Custom Video Controls */}
-                <div className="video-controls">
-                  <button className="play-btn" onClick={togglePlay}>
-                    {isPlaying ? (
-                      <svg viewBox="0 0 24 24" fill="currentColor">
-                        <rect x="6" y="4" width="4" height="16" />
-                        <rect x="14" y="4" width="4" height="16" />
-                      </svg>
-                    ) : (
-                      <svg viewBox="0 0 24 24" fill="currentColor">
-                        <polygon points="5 3 19 12 5 21 5 3" />
-                      </svg>
-                    )}
-                  </button>
-                  
-                  <div className="time-display">
-                    {formatTime(currentTime)} / {formatTime(duration)}
-                  </div>
-                  
-                  <div className="progress-bar" onClick={handleSeek}>
-                    <div 
-                      className="progress-fill" 
-                      style={{ width: `${(currentTime / duration) * 100 || 0}%` }}
-                    ></div>
-                  </div>
-                </div>
+                <iframe style={{height: '100%', width: '100%', aspectRatio: 9/16}} src="https://www.youtube.com/embed/SzYGkDQIuIQ" title="PharmaCheck - O&#39;zbekistondagi eng yaxshi sog&#39;ligni saqlash ilovasi." frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
               </div>
             </div>
 
@@ -132,11 +96,11 @@ const Demo = () => {
               <h2 className="description-title">
                 Revolutionizing Pharmaceutical Authentication
               </h2>
-              
+
               <div className="description-intro">
                 <p>
-                  In a world where counterfeit medications pose serious health risks, our innovative 
-                  QR-based verification system provides an unbreakable shield of protection for consumers 
+                  In a world where counterfeit medications pose serious health risks, our innovative
+                  QR-based verification system provides an unbreakable shield of protection for consumers
                   and pharmaceutical companies alike.
                 </p>
               </div>
@@ -151,9 +115,9 @@ const Demo = () => {
                 <div>
                   <h3>Secure & Tamper-Proof</h3>
                   <p>
-                    Each pharmaceutical product is equipped with a unique QR code sealed beneath a 
-                    scratch-off layer. This physical security measure ensures that once removed, 
-                    the product cannot be resealed or resold as original, creating an irreversible 
+                    Each pharmaceutical product is equipped with a unique QR code sealed beneath a
+                    scratch-off layer. This physical security measure ensures that once removed,
+                    the product cannot be resealed or resold as original, creating an irreversible
                     authentication mark.
                   </p>
                 </div>
@@ -168,9 +132,9 @@ const Demo = () => {
                 <div>
                   <h3>One-Time Verification</h3>
                   <p>
-                    Our system tracks every scan in real-time. When a consumer scans a QR code using 
-                    our mobile app, the UUID is verified against our secure database. If the code has 
-                    been scanned before, the system immediately flags it as potentially counterfeit, 
+                    Our system tracks every scan in real-time. When a consumer scans a QR code using
+                    our mobile app, the UUID is verified against our secure database. If the code has
+                    been scanned before, the system immediately flags it as potentially counterfeit,
                     preventing the spread of fake medications.
                   </p>
                 </div>
@@ -187,8 +151,8 @@ const Demo = () => {
                 <div>
                   <h3>Complete Product Information</h3>
                   <p>
-                    Upon successful verification, users gain instant access to comprehensive product 
-                    details including active ingredients, manufacturing date, expiration date, batch 
+                    Upon successful verification, users gain instant access to comprehensive product
+                    details including active ingredients, manufacturing date, expiration date, batch
                     numbers, and manufacturer information—all verified directly from the source.
                   </p>
                 </div>
@@ -217,7 +181,7 @@ const Demo = () => {
       <section className="demo-cards-section">
         <div className="container">
           <div className="demo-cards-grid">
-            
+
             {/* What's Demonstrated Card */}
             <div className="info-card">
               <div className="card-header-demo">
@@ -257,18 +221,18 @@ const Demo = () => {
                 <div className="problem-solution-block">
                   <h4>The Problem</h4>
                   <p>
-                    Counterfeit pharmaceuticals flood the market, putting lives at risk. Consumers 
-                    have no reliable way to verify authenticity at the point of purchase. Fake 
-                    medications can contain harmful substances or wrong dosages, leading to serious 
+                    Counterfeit pharmaceuticals flood the market, putting lives at risk. Consumers
+                    have no reliable way to verify authenticity at the point of purchase. Fake
+                    medications can contain harmful substances or wrong dosages, leading to serious
                     health consequences.
                   </p>
                 </div>
                 <div className="problem-solution-block">
                   <h4>Our Solution</h4>
                   <p>
-                    Each medication receives a unique QR code with a scratch-off security layer. 
-                    Users scan the code through our app to instantly verify authenticity. The 
-                    one-time-use system prevents counterfeiters from copying and reselling fake 
+                    Each medication receives a unique QR code with a scratch-off security layer.
+                    Users scan the code through our app to instantly verify authenticity. The
+                    one-time-use system prevents counterfeiters from copying and reselling fake
                     products as originals, creating a secure ecosystem for pharmaceutical distribution.
                   </p>
                 </div>
@@ -288,7 +252,7 @@ const Demo = () => {
                 {projectStatus}
               </span>
             </div>
-            
+
             <div className="status-grid">
               <div className="status-item">
                 <div className="status-icon completed">
@@ -378,7 +342,7 @@ const Demo = () => {
                 </svg>
                 Launch Prototype
               </a>
-              <a href="https://github.com/beharus/pharmacheck-backend"  target='_blank' className="btn btn-outline btn-large">
+              <a href="https://github.com/beharus/pharmacheck-backend" target='_blank' className="btn btn-outline btn-large">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="icon">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                   <polyline points="14 2 14 8 20 8" />
