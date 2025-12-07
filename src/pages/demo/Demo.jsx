@@ -10,6 +10,9 @@ const Demo = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const videoRef = useRef(null);
+  const [isApiCodeExpanded, setIsApiCodeExpanded] = useState(false);
+  const [isResponseExpanded, setIsResponseExpanded] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -46,6 +49,37 @@ const Demo = () => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+    const requestCode = `const myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+
+const raw = JSON.stringify({
+  "message": "Loyihangiz AI'dan qanday foydalanadi?"
+});
+
+const requestOptions = {
+  method: "POST",
+  headers: myHeaders,
+  body: raw,
+  redirect: "follow"
+};
+
+fetch("https://ai-chat-bot-oig5.onrender.com/api/chat/", requestOptions)
+  .then((response) => response.text())
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));`;
+
+  const responseCode = `{
+  "conversation_id": null,
+  "response": "Hello! How can I assist you today?",
+  "timestamp": "2025-12-07T12:03:41.460677Z"
+}`;
+
+  const copyToClipboard = (text, type) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    });
   };
 
   return (
@@ -270,7 +304,6 @@ const Demo = () => {
                   </ul>
                 </div>
               </div>
-
               <div className="status-item">
                 <div className="status-icon in-progress">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -310,6 +343,175 @@ const Demo = () => {
           </div>
         </div>
       </section>
+            <section className="api-integration-section">
+        <div className="container">
+          <div className="api-section-header">
+            <h2 className="section-title">
+              <span className="gradient-text">API Integration</span>
+            </h2>
+            <p className="section-subtitle">
+              Easily integrate with our AI chatbot API for seamless communication
+            </p>
+          </div>
+
+          <div className="api-demo-grid">
+            {/* Request Block */}
+            <div className="api-block">
+              <div className="api-block-header">
+                <div className="api-block-title">
+                  <div className="api-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                    </svg>
+                  </div>
+                  <h3>API Request</h3>
+                </div>
+                <div className="api-block-actions">
+                  <button 
+                    className="api-action-btn"
+                    onClick={() => setIsApiCodeExpanded(!isApiCodeExpanded)}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      {isApiCodeExpanded ? 
+                        <polyline points="18 15 12 9 6 15" /> :
+                        <polyline points="6 9 12 15 18 9" />
+                      }
+                    </svg>
+                  </button>
+                  <button 
+                    className="api-action-btn copy-btn"
+                    onClick={() => copyToClipboard(requestCode, 'request')}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                    {isCopied && <span className="copy-tooltip">Copied!</span>}
+                  </button>
+                </div>
+              </div>
+              
+              <div className={`code-block ${isApiCodeExpanded ? 'expanded' : ''}`}>
+                <pre>
+                  <code className="language-javascript">
+                    {requestCode}
+                  </code>
+                </pre>
+              </div>
+
+              <div className="api-block-description">
+                <p>
+                  <strong>Endpoint:</strong> <code className="inline-code">https://ai-chat-bot-oig5.onrender.com/api/chat/</code>
+                </p>
+                <p>
+                  <strong>Method:</strong> <span className="method-tag method-post">POST</span>
+                </p>
+                <p>
+                  <strong>Headers:</strong> <code className="inline-code">Content-Type: application/json</code>
+                </p>
+              </div>
+            </div>
+
+            {/* Response Block */}
+            <div className="api-block">
+              <div className="api-block-header">
+                <div className="api-block-title">
+                  <div className="api-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    </svg>
+                  </div>
+                  <h3>API Response</h3>
+                </div>
+                <div className="api-block-actions">
+                  <button 
+                    className="api-action-btn"
+                    onClick={() => setIsResponseExpanded(!isResponseExpanded)}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      {isResponseExpanded ? 
+                        <polyline points="18 15 12 9 6 15" /> :
+                        <polyline points="6 9 12 15 18 9" />
+                      }
+                    </svg>
+                  </button>
+                  <button 
+                    className="api-action-btn copy-btn"
+                    onClick={() => copyToClipboard(responseCode, 'response')}
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              
+              <div className={`code-block ${isResponseExpanded ? 'expanded' : ''}`}>
+                <pre>
+                  <code className="language-json">
+                    {responseCode}
+                  </code>
+                </pre>
+              </div>
+
+              <div className="api-block-description">
+                <div className="response-fields">
+                  <div className="field-row">
+                    <span className="field-name">conversation_id</span>
+                    <span className="field-type">string | null</span>
+                    <span className="field-desc">Unique conversation identifier</span>
+                  </div>
+                  <div className="field-row">
+                    <span className="field-name">response</span>
+                    <span className="field-type">string</span>
+                    <span className="field-desc">AI-generated response message</span>
+                  </div>
+                  <div className="field-row">
+                    <span className="field-name">timestamp</span>
+                    <span className="field-type">string (ISO 8601)</span>
+                    <span className="field-desc">Response timestamp</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="api-info-grid">
+            <div className="api-info-card">
+              <div className="info-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="16" x2="12" y2="12" />
+                  <line x1="12" y1="8" x2="12.01" y2="8" />
+                </svg>
+              </div>
+              <h4>Authentication</h4>
+              <p>Currently no authentication required for demo. Production endpoints will use API keys.</p>
+            </div>
+
+            <div className="api-info-card">
+              <div className="info-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                </svg>
+              </div>
+              <h4>Rate Limits</h4>
+              <p>100 requests per hour per IP address. Production plans offer higher limits.</p>
+            </div>
+
+            <div className="api-info-card">
+              <div className="info-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+              </div>
+              <h4>Real-time</h4>
+              <p>Average response time under 2 seconds. WebSocket support available for real-time chat.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Live Prototype */}
       <section className="demo-prototype-section">
@@ -334,7 +536,7 @@ const Demo = () => {
             </div>
 
             <div className="prototype-actions">
-              <a href="https://pharmachecklite.netlify.app/" target='_blank' className="btn btn-hero btn-large">
+              <a href="https://pharmachecklite.netlify.app" target='_blank' className="btn btn-hero btn-large">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="icon">
                   <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                   <polyline points="15 3 21 3 21 9" />

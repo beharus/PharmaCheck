@@ -73,11 +73,8 @@ const Header = () => {
 
           {/* CTA Button - Desktop */}
           <div className="desktop-cta">
-            <a
-              href="https://pharmachecklite.netlify.app/"
+             <a href="https://pharmachecklite.netlify.app" target='_blank'
               className="cta-button"
-              target="_blank"
-              rel="noopener noreferrer"
             >
               <span>Try Prototype</span>
               <svg
@@ -124,8 +121,7 @@ const Header = () => {
               </Link>
             ))}
             <div className="mobile-menu-divider" />
-            <Link
-              to="/app"
+            <a href="https://pharmachecklite.netlify.app" target='_blank'
               onClick={() => setIsMobileMenuOpen(false)}
               className="mobile-cta-button"
             >
@@ -139,7 +135,7 @@ const Header = () => {
               >
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
-            </Link>
+            </a>
           </nav>
         </div>
       </div>

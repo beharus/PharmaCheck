@@ -9,12 +9,20 @@ interface Message {
   sender: "user" | "bot";
   timestamp: Date;
 }
+
 const animatedTexts = [
   "PharmaAI Assistant",
   "Chat with AI",
   "Ask Any Questions",
   "Medicine Expert",
   "24/7 Available",
+];
+
+const quickQuestions = [
+  "How do I check if my pills are fake or real?",
+  "What are the side effects of this medication?",
+  "Can I take this medicine with food?",
+  "What's the proper dosage for adults?",
 ];
 
 const ChatbotWidget = () => {
@@ -134,6 +142,10 @@ const ChatbotWidget = () => {
     }
   };
 
+  const handleQuickQuestion = (question: string) => {
+    sendMessage(question);
+  };
+
   return (
     <>
       {/* Chat Window */}
@@ -203,6 +215,25 @@ const ChatbotWidget = () => {
                 </div>
               </div>
             )}
+            
+            {/* Quick Questions - Show only when it's the welcome message */}
+            {messages.length === 1 && messages[0].id === "welcome" && !isLoading && (
+              <div className="quick-questions">
+                <p className="quick-questions-title">Quick Questions:</p>
+                <div className="quick-questions-grid">
+                  {quickQuestions.map((question, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleQuickQuestion(question)}
+                      className="quick-question-btn"
+                    >
+                      {question}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            
             <div ref={messagesEndRef} />
           </div>
 
@@ -534,6 +565,49 @@ const ChatbotWidget = () => {
           height: 1.25rem;
         }
 
+        /* Quick Questions Styles */
+        .quick-questions {
+          margin-top: 1rem;
+          animation: fadeInUp 0.5s ease-out;
+        }
+
+        .quick-questions-title {
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: var(--muted-foreground);
+          margin: 0 0 0.75rem 0;
+        }
+
+        .quick-questions-grid {
+          display: grid;
+          gap: 0.5rem;
+        }
+
+        .quick-question-btn {
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 0.75rem;
+          padding: 0.75rem 1rem;
+          text-align: left;
+          font-size: 0.875rem;
+          color: var(--foreground);
+          cursor: pointer;
+          transition: all 0.2s;
+          line-height: 1.4;
+        }
+
+        .quick-question-btn:hover {
+          background: var(--primary);
+          color: white;
+          border-color: var(--primary);
+          transform: translateX(4px);
+          box-shadow: 0 2px 8px rgba(24, 144, 139, 0.2);
+        }
+
+        .quick-question-btn:active {
+          transform: translateX(2px);
+        }
+
         /* Animated Text Label */
         .chatbot-label {
           position: fixed;
@@ -609,72 +683,6 @@ const ChatbotWidget = () => {
         .toggle-icon {
           width: 1.75rem;
           height: 1.75rem;
-        }
-
-        /* Robot Head Design */
-        .bot-head {
-          position: relative;
-          width: 36px;
-          height: 36px;
-          animation: bobbing 3s ease-in-out infinite;
-        }
-
-        .bot-antenna {
-          position: absolute;
-          top: -8px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 2px;
-          height: 10px;
-          background: white;
-          border-radius: 2px;
-        }
-
-        .bot-antenna::after {
-          content: '';
-          position: absolute;
-          top: -4px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 6px;
-          height: 6px;
-          background: var(--accent);
-          border-radius: 50%;
-          animation: blink 2s ease-in-out infinite;
-        }
-
-        .bot-face {
-          width: 100%;
-          height: 100%;
-          background: white;
-          border-radius: 8px;
-          position: relative;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          padding: 6px;
-        }
-
-        .bot-eyes {
-          display: flex;
-          gap: 8px;
-          margin-bottom: 6px;
-        }
-
-        .bot-eye {
-          width: 6px;
-          height: 6px;
-          background: var(--primary);
-          border-radius: 50%;
-          animation: eyeBlink 4s ease-in-out infinite;
-        }
-
-        .bot-mouth {
-          width: 14px;
-          height: 3px;
-          background: var(--primary);
-          border-radius: 2px;
         }
 
         .notification-badge {
@@ -761,33 +769,6 @@ const ChatbotWidget = () => {
           }
         }
 
-        @keyframes bobbing {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-4px);
-          }
-        }
-
-        @keyframes blink {
-          0%, 90%, 100% {
-            opacity: 1;
-          }
-          95% {
-            opacity: 0.3;
-          }
-        }
-
-        @keyframes eyeBlink {
-          0%, 90%, 100% {
-            transform: scaleY(1);
-          }
-          95% {
-            transform: scaleY(0.1);
-          }
-        }
-
         .spinning {
           animation: spin 1s linear infinite;
         }
@@ -824,13 +805,13 @@ const ChatbotWidget = () => {
             padding: 0.6rem 1rem;
           }
 
-          .bot-head {
-            width: 32px;
-            height: 32px;
-          }
-
           .message-content {
             max-width: 85%;
+          }
+
+          .quick-question-btn {
+            font-size: 0.8rem;
+            padding: 0.65rem 0.85rem;
           }
         }
       `}</style>
